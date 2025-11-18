@@ -37,26 +37,35 @@
 <script>
 //Your code goes here 
 
-	let isDown = false;
-let startX;
-let scrollLeft;
+	const slider = document.querySelector('.items');
+    let isDown = false;
+    let startX;
+    let scrollLeft;
 
-container.addEventListener('mousedown', (e) => {
-  isDown = true;
-  startX = e.pageX - container.offsetLeft;
-  scrollLeft = container.scrollLeft;
-});
+    slider.addEventListener('mousedown', (e) => {
+      isDown = true;
+      slider.classList.add('active');
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+    });
 
-container.addEventListener('mouseup', () => isDown = false);
-container.addEventListener('mouseleave', () => isDown = false);
+    slider.addEventListener('mouseleave', () => {
+      isDown = false;
+      slider.classList.remove('active');
+    });
 
-container.addEventListener('mousemove', (e) => {
-  if (!isDown) return;
-  const x = e.pageX - container.offsetLeft;
-  const walk = x - startX;
-  container.scrollLeft = scrollLeft - walk;
-});
+    slider.addEventListener('mouseup', () => {
+      isDown = false;
+      slider.classList.remove('active');
+    });
 
+    slider.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - slider.offsetLeft;
+      const walk = (x - startX) * 2;
+      slider.scrollLeft = scrollLeft - walk;
+    });
 
 	
 </script>
