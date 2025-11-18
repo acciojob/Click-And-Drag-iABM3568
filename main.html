@@ -37,66 +37,25 @@
 <script>
 //Your code goes here 
 
-	const container = document.querySelector(".items");
-const cubes = document.querySelectorAll(".item");
+	let isDown = false;
+let startX;
+let scrollLeft;
 
-let selectedCube = null;
-let offsetX = 0;
-let offsetY = 0;
-
-cubes.forEach(cube => {
-
-  cube.style.position = "absolute";    // allow free movement
-  cube.style.cursor = "grab";
-
-  // give each cube its initial position (grid-like)
-  const rect = cube.getBoundingClientRect();
-  const containerRect = container.getBoundingClientRect();
-
-  cube.style.left = rect.left - containerRect.left + "px";
-  cube.style.top = rect.top - containerRect.top + "px";
-
-  cube.addEventListener("mousedown", (e) => {
-    selectedCube = cube;
-
-    const cubeRect = cube.getBoundingClientRect();
-
-    offsetX = e.clientX - cubeRect.left;
-    offsetY = e.clientY - cubeRect.top;
-
-    cube.style.cursor = "grabbing";
-  });
-
+container.addEventListener('mousedown', (e) => {
+  isDown = true;
+  startX = e.pageX - container.offsetLeft;
+  scrollLeft = container.scrollLeft;
 });
 
-document.addEventListener("mousemove", (e) => {
-  if (!selectedCube) return;
+container.addEventListener('mouseup', () => isDown = false);
+container.addEventListener('mouseleave', () => isDown = false);
 
-  const containerRect = container.getBoundingClientRect();
-  const cubeRect = selectedCube.getBoundingClientRect();
-
-  // NEW POSITION  
-  let newLeft = e.clientX - containerRect.left - offsetX;
-  let newTop = e.clientY - containerRect.top - offsetY;
-
-  // BOUNDARY CONDITIONS
-  newLeft = Math.max(0, Math.min(newLeft, containerRect.width - cubeRect.width));
-  newTop = Math.max(0, Math.min(newTop, containerRect.height - cubeRect.height));
-
-  selectedCube.style.left = newLeft + "px";
-  selectedCube.style.top = newTop + "px";
+container.addEventListener('mousemove', (e) => {
+  if (!isDown) return;
+  const x = e.pageX - container.offsetLeft;
+  const walk = x - startX;
+  container.scrollLeft = scrollLeft - walk;
 });
-
-document.addEventListener("mouseup", () => {
-  if (selectedCube) {
-    selectedCube.style.cursor = "grab";
-  }
-  selectedCube = null;
-});
-
-
-
-	
 
 
 	
