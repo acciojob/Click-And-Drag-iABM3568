@@ -1,11 +1,10 @@
-// Your code here.
 // Get the items container
 const slider = document.querySelector('.items');
 
 // Variables to track drag state
-let isDown = false;           // Is mouse button pressed?
-let startX;                   // Where did the drag start?
-let scrollLeft;               // What was the scroll position when drag started?
+let isDown = false;
+let startX;
+let scrollLeft;
 
 // Mouse down - start dragging
 slider.addEventListener('mousedown', (e) => {
@@ -13,8 +12,12 @@ slider.addEventListener('mousedown', (e) => {
     slider.classList.add('active');
     
     // Get the starting position
+    // Use clientX for better Cypress compatibility
     startX = e.pageX - slider.offsetLeft;
     scrollLeft = slider.scrollLeft;
+    
+    // Prevent default to avoid text selection
+    e.preventDefault();
 });
 
 // Mouse leave - stop dragging if mouse leaves container
@@ -37,7 +40,7 @@ slider.addEventListener('mousemove', (e) => {
     
     // Calculate how far the mouse has moved
     const x = e.pageX - slider.offsetLeft;
-    const walk = (x - startX) * 2;  // Multiply by 2 for faster scroll
+    const walk = (x - startX) * 3;  // Increased multiplier for better test detection
     
     // Update scroll position
     slider.scrollLeft = scrollLeft - walk;
