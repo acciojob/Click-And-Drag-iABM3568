@@ -11,16 +11,12 @@ slider.addEventListener('mousedown', (e) => {
     isDown = true;
     slider.classList.add('active');
     
-    // Get the starting position
-    // Use clientX for better Cypress compatibility
-    startX = e.pageX - slider.offsetLeft;
+    // Store the actual pageX position
+    startX = e.pageX;
     scrollLeft = slider.scrollLeft;
-    
-    // Prevent default to avoid text selection
-    e.preventDefault();
 });
 
-// Mouse leave - stop dragging if mouse leaves container
+// Mouse leave - stop dragging
 slider.addEventListener('mouseleave', () => {
     isDown = false;
     slider.classList.remove('active');
@@ -34,13 +30,12 @@ slider.addEventListener('mouseup', () => {
 
 // Mouse move - drag if mouse is down
 slider.addEventListener('mousemove', (e) => {
-    if (!isDown) return;  // Only drag if mouse is down
-    
+    if (!isDown) return;
     e.preventDefault();
     
-    // Calculate how far the mouse has moved
-    const x = e.pageX - slider.offsetLeft;
-    const walk = (x - startX) * 3;  // Increased multiplier for better test detection
+    // Calculate the distance moved
+    const x = e.pageX;
+    const walk = (x - startX) * 3;
     
     // Update scroll position
     slider.scrollLeft = scrollLeft - walk;
