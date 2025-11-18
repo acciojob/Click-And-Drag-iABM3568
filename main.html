@@ -37,39 +37,66 @@
 <script>
 //Your code goes here 
 
+	const container = document.querySelector(".items");
+const cubes = document.querySelectorAll(".item");
 
+let selectedCube = null;
+let offsetX = 0;
+let offsetY = 0;
 
-	const slider = document.querySelector('.items');
-let isDown = false;
-let startX;
-let scrollLeft;
+cubes.forEach(cube => {
 
-slider.addEventListener('mousedown', (e) => {
-    isDown = true;
-    slider.classList.add('active');
-    startX = e.pageX - slider.offsetLeft;
-    scrollLeft = slider.scrollLeft;
+  cube.style.position = "absolute";    // allow free movement
+  cube.style.cursor = "grab";
+
+  // give each cube its initial position (grid-like)
+  const rect = cube.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+
+  cube.style.left = rect.left - containerRect.left + "px";
+  cube.style.top = rect.top - containerRect.top + "px";
+
+  cube.addEventListener("mousedown", (e) => {
+    selectedCube = cube;
+
+    const cubeRect = cube.getBoundingClientRect();
+
+    offsetX = e.clientX - cubeRect.left;
+    offsetY = e.clientY - cubeRect.top;
+
+    cube.style.cursor = "grabbing";
+  });
+
 });
 
-slider.addEventListener('mouseleave', () => {
-    isDown = false;
-    slider.classList.remove('active');
+document.addEventListener("mousemove", (e) => {
+  if (!selectedCube) return;
+
+  const containerRect = container.getBoundingClientRect();
+  const cubeRect = selectedCube.getBoundingClientRect();
+
+  // NEW POSITION  
+  let newLeft = e.clientX - containerRect.left - offsetX;
+  let newTop = e.clientY - containerRect.top - offsetY;
+
+  // BOUNDARY CONDITIONS
+  newLeft = Math.max(0, Math.min(newLeft, containerRect.width - cubeRect.width));
+  newTop = Math.max(0, Math.min(newTop, containerRect.height - cubeRect.height));
+
+  selectedCube.style.left = newLeft + "px";
+  selectedCube.style.top = newTop + "px";
 });
 
-slider.addEventListener('mouseup', () => {
-    isDown = false;
-    slider.classList.remove('active');
-});
-
-slider.addEventListener('mousemove', (e) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - slider.offsetLeft;
-    const distance = x - startX;
-    slider.scrollLeft = scrollLeft - distance * 3;
+document.addEventListener("mouseup", () => {
+  if (selectedCube) {
+    selectedCube.style.cursor = "grab";
+  }
+  selectedCube = null;
 });
 
 
+
+	
 
 
 	
